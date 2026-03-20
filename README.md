@@ -61,7 +61,7 @@ In particular, this pattern gives you the ability to utilize OOTB Hugging Face m
 
 4. (Optional) Autoscale the AML Endpoint: Set up autoscaling rules to dynamically adjust the number of instances based on real-time metrics, ensuring efficient handling of varying loads.​
 
-5. For pre-trained Foundry large language models, as long as these models offer a managed compute deployment option, you can use the model deployment wizard or follow the guide here: https://learn.microsoft.com/en-us/azure/foundry-classic/how-to/deploy-models-managed?pivots=ai-foundry-portal
+5. For pre-trained Foundry large language models, as long as these models offer a managed compute deployment option, you can use the model deployment wizard or follow the guide here: https://learn.microsoft.com/en-us/azure/foundry-classic/how-to/deploy-models-managed?pivots=ai-foundry-portal though note that for private and security reasons, the managed compute endpoint should always be set to use private endpoint (which is the default configuration in this repo).
 
 ### Essence of the steps via code/CLI commands: 
 
