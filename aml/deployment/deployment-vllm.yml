@@ -34,4 +34,3 @@ readiness_probe:
   timeout: 2
   success_threshold: 1
   failure_threshold: 30
-egress_public_network_access: disabled
