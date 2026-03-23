@@ -44,6 +44,8 @@ var targetSubResource = [
     'amlworkspace'
 ]
 
+var amlType = 'Default' // or it can be set to 'hub' for deploying Foundry LLMs via managed compute
+
 resource amlWorkspace 'Microsoft.MachineLearningServices/workspaces@2023-10-01' = {
   name: amlWorkspaceName
   location: location
@@ -71,7 +73,7 @@ resource amlWorkspace 'Microsoft.MachineLearningServices/workspaces@2023-10-01' 
     // private link settings
     sharedPrivateLinkResources: []
   }
-  kind: 'Default'
+  kind: amlType
 }
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {

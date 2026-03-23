@@ -23,24 +23,26 @@ In particular for models from the Directly Sold by Azure list within Microsoft F
 
 * Alternatively, global deployment type means that data might be processed for inferencing in any Foundry location in the world. Data zone is not applicable for Canada as only US and Europe regions have [Data Zone support](https://azure.microsoft.com/en-us/blog/announcing-the-availability-of-azure-openai-data-zones-and-latest-updates-from-azure-ai/?msockid=140ffb7f5488655f0412ed745540640a). 
 
-* As of December 17, 2025, these are the models within AI Foundry that provide guaranteed data in-transit processing within Canada:
+* As of March 20, 2026, these are the models within AI Foundry that provide guaranteed data in-transit processing within Canada:
   * Standard for [Pay-As-You-Go deployments](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry&preserve-view=true&tabs=global-standard-aoai%2Cstandard-chat-completions%2Cglobal-standard&pivots=azure-openai#standard-deployment-regional-models-by-endpoint) (available through Microsoft Foundry deployed in Canada East region):
-    * gpt-3.5 turbo models (Versions 1106, 0125)
+    * gpt-4.1-mini
     * gpt-4o (Version 1120)
     * text embedding models (ada, 3-large, 3-small)
   * Regional [Provisioned Throughput Units (PTU) deployments](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry&preserve-view=true&tabs=provisioned%2Cstandard-chat-completions%2Cglobal-standard&pivots=azure-openai#provisioned-deployment-model-availability) (available through Microsoft Foundry deployed in Canada East region):
     * o3-mini
+    * gpt-5-mini (though it is currently out of capacity)
     * gpt-5
+    * gpt-5.1
     * gpt-4o (Versions 1120, 0806, 0513 - also available in Canada Central)
     * gpt-4o-mini - also available in Canada Central
 
-* There are also certain AI models that could be deployed using the Microsoft Foundry (classic) hub-based service using managed compute, such as [certain Cohere models](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry&preserve-view=true&tabs=global-standard-aoai%2Cstandard-chat-completions%2Cglobal-standard&pivots=azure-direct-others#cohere-models-sold-directly-by-azure) from the Directly Sold by Azure list. Such models would be deployed on managed GPU VMs to ensure data in-transit and data at rest remains in Canada geography in a Hub-based Foundry resource, which is based on the Azure ML deployment infrastructure as seen below.
+* There are also many AI models that could be deployed using the Microsoft Foundry (classic) hub-based service using managed compute, such as [certain Cohere models](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry&preserve-view=true&tabs=global-standard-aoai%2Cstandard-chat-completions%2Cglobal-standard&pivots=azure-direct-others#cohere-models-sold-directly-by-azure) from the Directly Sold by Azure list. Such models would be deployed on managed GPU VMs to ensure data in-transit and data at rest remains in Canada geography in a Hub-based Foundry resource, which is based on the Azure ML deployment infrastructure as seen below. Just remember to set the Azure ML deployment script as `kind: 'hub'`.
 
 ## Azure Machine Learning AI model deployment options
 
-The following is guidance to facilitate deployment of generic AI models including large language models (LLMs) on Azure Machine Learning's (AML) Managed Online Endpoints for efficient, scalable, and secure real-time inference.​ Two patterns of deployment types are described: models through vLLM and generic AI models. By leveraging AML's [Managed Online Endpoints](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-deploy-online-endpoints?view=azureml-api-2&tabs=cli), the model would be deployed within the AML region and secured through inbound and outbound private connections thus ensuring a secured and sovereign solution.
+The following is guidance to facilitate deployment of generic AI models including large language models (LLMs) on Azure Machine Learning's (AML) Managed Online Endpoints for efficient, scalable, and secure real-time inference.​ Two patterns of deployment types are described: models through vLLM and generic AI models. By leveraging AML's [Managed Online Endpoints](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-deploy-online-endpoints?view=azureml-api-2&tabs=cli), the model would be deployed within the AML region and secured through inbound and outbound private connections thus ensuring a secured and sovereign solution. The AI model is deployed in a [managed virtual network](https://learn.microsoft.com/en-us/azure/machine-learning/concept-secure-online-endpoint?view=azureml-api-2&tabs=cli) within the region of the Azure ML service, which should be in Canada Central.
 
-In particular, this pattern gives you the ability to utilize OOTB Hugging Face models onto Managed Online Endpoints in AML.
+In particular, this pattern gives you the ability to utilize OOTB Hugging Face models onto Managed Online Endpoints in AML, using managed compute.
 
  ### Pre-requisites : 
 
@@ -57,8 +59,9 @@ In particular, this pattern gives you the ability to utilize OOTB Hugging Face m
 
 3. Test the Deployment: Retrieve the endpoint's scoring URI and API keys, then send test requests to ensure the model is serving correctly.​ Using MS Entra for authentication and authorization is supported as well: https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online-auth?view=azureml-api-2
 
-4  (Optional) - Autoscale the AML Endpoint: Set up autoscaling rules to dynamically adjust the number of instances based on real-time metrics, ensuring efficient handling of varying loads.​
+4. (Optional) Autoscale the AML Endpoint: Set up autoscaling rules to dynamically adjust the number of instances based on real-time metrics, ensuring efficient handling of varying loads.​
 
+5. For pre-trained Foundry large language models, as long as these models offer a managed compute deployment option, you can use the model deployment wizard or follow the guide here: https://learn.microsoft.com/en-us/azure/foundry-classic/how-to/deploy-models-managed?pivots=ai-foundry-portal though note that for private and security reasons, the managed compute endpoint should always be set to use private endpoint (which is the default configuration in this repo).
 
 ### Essence of the steps via code/CLI commands: 
 
