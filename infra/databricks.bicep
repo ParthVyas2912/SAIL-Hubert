@@ -13,7 +13,7 @@
 param databricksName string = 'dbw-sail-dev'
 
 @description('Location for all resources.')
-param location string = 'canadaeast'
+param location string = 'canadacentral'
 
 @description('The pricing tier of the Databricks workspace.')
 @allowed([
